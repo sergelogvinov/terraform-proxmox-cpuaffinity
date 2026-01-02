@@ -12,9 +12,10 @@ locals {
 
   vm_arch = { for k in flatten([
     for inx in range(var.vms) : {
-      inx : inx
-      cpus : slice(flatten(local.cpus), inx * var.cpus + local.shift, (inx + 1) * var.cpus + local.shift)
-      numa : { for numa in range(length(var.cpu_affinity)) : numa => setintersection(local.cpus[numa], slice(flatten(local.cpus), inx * var.cpus + local.shift, (inx + 1) * var.cpus + local.shift)) }
+      inx : var.shift >= 0 ? inx : var.vms - inx - 1
+      cpus : var.shift >= 0 ? slice(flatten(local.cpus), inx * var.cpus + local.shift, (inx + 1) * var.cpus + local.shift) : slice(flatten(local.cpus), (inx - 1) * var.cpus + local.shift, inx * var.cpus + local.shift)
+      shift : local.shift
+      numa : var.shift >= 0 ? { for numa in range(length(var.cpu_affinity)) : numa => setintersection(local.cpus[numa], slice(flatten(local.cpus), inx * var.cpus + local.shift, (inx + 1) * var.cpus + local.shift)) } : { for numa in range(length(var.cpu_affinity)) : numa => setintersection(local.cpus[numa], slice(flatten(local.cpus), (inx - 1) * var.cpus + local.shift, inx * var.cpus + local.shift)) }
     }
   ]) : k.inx => k }
 }
