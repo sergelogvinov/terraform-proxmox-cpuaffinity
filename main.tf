@@ -1,14 +1,16 @@
 
 locals {
+  server_numas = length(var.cpu_affinity)
+
   server_cpus = [for i in var.cpu_affinity :
     flatten([for r in split(",", i) : (strcontains(r, "-") ? range(split("-", r)[0], split("-", r)[1] + 1, 1) : [r])])
   ]
 
   cpus = [for k, v in local.server_cpus :
-    var.shift >= 0 ? flatten([flatten([for r in range(length(v) / 2) : [v[r], v[r + length(v) / 2]]])]) : reverse(flatten([flatten([for r in range(length(v) / 2) : [v[r], v[r + length(v) / 2]]])]))
+    flatten([flatten([for r in range(length(v) / 2) : [v[r], v[r + length(v) / 2]]])])
   ]
 
-  shift = var.shift >= 0 ? var.shift * length(try(local.cpus[0], [])) : abs(length(var.cpu_affinity) + var.shift + 1) * length(try(local.cpus[0], [])) - var.vms * var.cpus
+  shift = var.shift >= 0 ? var.shift * length(try(local.cpus[0], [])) : max(local.cpus[local.server_numas + var.shift]...) - (var.vms * var.cpus - 1)
 
   vm_arch = { for k in flatten([
     for inx in range(var.vms) : {
