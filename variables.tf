@@ -19,3 +19,8 @@ variable "shift" {
   type    = number
   default = 0
 }
+
+variable "reverse" {
+  type    = bool
+  default = false
+}

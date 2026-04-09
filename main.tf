@@ -7,6 +7,8 @@ locals {
   ]
 
   cpus = [for k, v in local.server_cpus :
+    var.reverse ?
+    flatten([flatten([for r in reverse(range(length(v) / 2)) : [v[r], v[r + length(v) / 2]]])]) :
     flatten([flatten([for r in range(length(v) / 2) : [v[r], v[r + length(v) / 2]]])])
   ]
 
