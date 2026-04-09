@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/sergelogvinov/terraform-proxmox-cpuaffinity/compare/v0.1.0...v0.2.0) (2026-04-09)
+
+
+### Features
+
+* cpu reverse index ([21cd1cb](https://github.com/sergelogvinov/terraform-proxmox-cpuaffinity/commit/21cd1cbd265f51ab9fb964379d13715048a4d3b5))
+
 ## [0.1.0](https://github.com/sergelogvinov/terraform-proxmox-cpuaffinity/compare/v0.0.1...v0.1.0) (2026-01-02)
 
 
